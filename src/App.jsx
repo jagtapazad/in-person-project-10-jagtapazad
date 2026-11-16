@@ -6,6 +6,7 @@ import AlertsCard from './components/AlertsCard';
 import SearchBar from './components/SearchBar';
 import StatusBar from './components/StatusBar';
 import { fetchDashboardData } from './services/dashboardService';
+import { usePolling } from './hooks/usePolling';
 
 function App() {
   const [city, setCity] = useState('San Francisco');
@@ -41,6 +42,9 @@ function App() {
   useEffect(() => {
     fetchAllData(city);
   }, [city]);
+
+  // Reload every 30 seconds; the effect above reloads when the city changes
+  usePolling(() => fetchAllData(city), 30000);
 
   const handleRefresh = () => {
     fetchAllData(city);

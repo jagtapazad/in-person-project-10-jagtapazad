@@ -32,11 +32,14 @@ function App() {
   const fetchAllData = async (cityName) => {
     setLoading({ weather: true, forecast: true, news: true, alerts: true });
 
-    const { data, errors } = await fetchDashboardData(cityName);
-
-    setDashboardData(prev => ({ ...prev, ...data }));
-    setErrors(errors);
-    setLoading({ weather: false, forecast: false, news: false, alerts: false });
+    // Each card updates on its own as soon as its request settles
+    await fetchDashboardData(cityName, (name, data, error) => {
+      if (data) {
+        setDashboardData(prev => ({ ...prev, [name]: data }));
+      }
+      setErrors(prev => ({ ...prev, [name]: error }));
+      setLoading(prev => ({ ...prev, [name]: false }));
+    });
   };
 
   useEffect(() => {
